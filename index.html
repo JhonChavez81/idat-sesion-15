@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos de CSS - Presentación Interactiva</title>
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Iconos de FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Variables Globales */
+        :root {
+            --bg-base: #0f172a;
+            --bg-slide: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --secondary: #818cf8;
+            --accent: #f472b6;
+            --code-bg: #020617;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Reseteo básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Evita el scroll global */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenedor Principal */
+        #presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* Estilos de las Diapositivas */
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            max-height: 700px;
+            background-color: var(--bg-slide);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            
+            /* Estado inactivo por defecto */
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+            overflow-y: auto; /* Permite scroll interno si el contenido es muy alto en móviles */
+        }
+
+        /* Ocultar barra de scroll en WebKit */
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        /* Diapositiva Activa */
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        /* Tipografía */
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 2rem;
+            border-bottom: 3px solid rgba(56, 189, 248, 0.2);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        p, li {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-left: 2rem;
+        }
+
+        strong {
+            color: var(--text-main);
+        }
+
+        /* Código */
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--code-bg);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-family: 'Fira Code', monospace;
+            color: var(--text-main);
+            overflow-x: auto;
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        /* Animaciones (Fragmentos) */
+        .fragment {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .slide.active .fragment {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Retrasos secuenciales de CSS */
+        .slide.active .delay-1 { transition-delay: 0.2s; }
+        .slide.active .delay-2 { transition-delay: 0.4s; }
+        .slide.active .delay-3 { transition-delay: 0.6s; }
+        .slide.active .delay-4 { transition-delay: 0.8s; }
+
+        /* Layouts de las Diapositivas */
+        .center-content {
+            text-align: center;
+            align-items: center;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Tarjetas */
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .cards-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: rgba(2, 6, 23, 0.4);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Tabla */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Controles de Navegación */
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .btn-nav {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: var(--primary);
+            color: var(--bg-base);
+            transform: scale(1.1);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Barra de Progreso */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.05);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Contador */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'Fira Code', monospace;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            z-index: 100;
+        }
+
+        .pulse-text {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="presentation-container">
+        
+        <!-- Diapositiva 1: Inicio -->
+        <div class="slide active center-content">
+            <div class="fragment delay-1">
+                <h1>Fundamentos de CSS</h1>
+            </div>
+            <p class="fragment delay-2 pulse-text" style="font-size: 1.5rem; color: var(--primary);">El arte de dar estilo a la web</p>
+            <div class="fragment delay-3" style="margin-top: 3rem;">
+                <p><i class="fa-solid fa-keyboard"></i> Usa las <strong>flechas del teclado</strong> o los botones para navegar</p>
+            </div>
+        </div>
+
+        <!-- Diapositiva 2: Concepto -->
+        <div class="slide">
+            <h2>¿Qué es CSS?</h2>
+            <div class="grid-2">
+                <div>
+                    <ul>
+                        <li class="fragment delay-1"><strong>Cascading Style Sheets</strong> (Hojas de Estilo en Cascada).</li>
+                        <li class="fragment delay-2">Se encarga de la <strong>presentación visual</strong>: colores, tipografía, espacios y maquetación.</li>
+                        <li class="fragment delay-3">Separa el contenido (HTML) del diseño visual.</li>
+                        <li class="fragment delay-4">Permite el diseño <strong>Responsive</strong> (adaptable a móviles y escritorio).</li>
+                    </ul>
+                </div>
+                <div class="fragment delay-2 center-content">
+                    <i class="fa-brands fa-css3-alt" style="font-size: 10rem; color: var(--secondary);"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 3: Formas de Insertar -->
+        <div class="slide">
+            <h2>3 Formas de Insertar CSS</h2>
+            <div class="cards-container">
+                <!-- Tarjeta 1 -->
+                <div class="card fragment delay-1">
+                    <i class="fa-solid fa-code"></i>
+                    <h3>En Línea (Inline)</h3>
+                    <p style="font-size: 1rem;">Se usa el atributo <code>style</code> en la etiqueta HTML.</p>
+                    <div class="code-block" style="font-size: 0.8rem; text-align: left;">
+                        &lt;h1 <span style="color:var(--primary)">style</span>=<span style="color:var(--accent)">"color:red;"</span>&gt;<br>Texto<br>&lt;/h1&gt;
+                    </div>
+                </div>
+                <!-- Tarjeta 2 -->
+                <div class="card fragment delay-2">
+                    <i class="fa-solid fa-file-code"></i>
+                    <h3>Interno</h3>
+                    <p style="font-size: 1rem;">Se usa la etiqueta <code>&lt;style&gt;</code> en el <code>&lt;head&gt;</code>.</p>
+                    <div class="code-block" style="font-size: 0.8rem; text-align: left;">
+                        &lt;style&gt;<br>
+                        &nbsp;&nbsp;h1 { color: blue; }<br>
+                        &lt;/style&gt;
+                    </div>
+                </div>
+                <!-- Tarjeta 3 -->
+                <div class="card fragment delay-3" style="border-color: var(--primary); background: rgba(56, 189, 248, 0.05);">
+                    <i class="fa-solid fa-link" style="color: var(--primary);"></i>
+                    <h3>Externo <span style="font-size:0.6em;">⭐ MEJOR</span></h3>
+                    <p style="font-size: 1rem;">Se vincula un archivo <code>.css</code> independiente.</p>
+                    <div class="code-block" style="font-size: 0.8rem; text-align: left;">
+                        &lt;link rel="stylesheet"<br>href="style.css"&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 4: Selectores -->
+        <div class="slide">
+            <h2>Selectores Básicos</h2>
+            <p class="fragment delay-1">Indican <strong>a qué elementos HTML</strong> se les aplicarán los estilos.</p>
+            
+            <div class="table-responsive fragment delay-2">
+                <table>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Nombre</th>
+                        <th>Aplicación</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td><code style="font-size: 1.2rem;">*</code></td>
+                        <td>Universal</td>
+                        <td>Absolutamente todo</td>
+                        <td><code>* { margin: 0; }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-size: 1.2rem;">p, div</code></td>
+                        <td>Etiqueta</td>
+                        <td>Todas las etiquetas de ese tipo</td>
+                        <td><code>p { color: white; }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-size: 1.2rem;">.</code> (punto)</td>
+                        <td>Clase</td>
+                        <td>Elementos con class="nombre"</td>
+                        <td><code>.caja { padding: 10px; }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code style="font-size: 1.2rem;">#</code> (gato)</td>
+                        <td>ID</td>
+                        <td>Elemento único con id="nombre"</td>
+                        <td><code>#menu { background: red; }</code></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Diapositiva 5: Cascada y Especificidad -->
+        <div class="slide">
+            <h2>Cascada y Especificidad</h2>
+            <div class="grid-2">
+                <div>
+                    <h3 class="fragment delay-1" style="color: var(--primary);"><i class="fa-solid fa-water"></i> La Cascada</h3>
+                    <p class="fragment delay-2">CSS se lee de arriba hacia abajo. Si hay reglas en conflicto, <strong>la última escrita gana</strong>.</p>
+                    
+                    <h3 class="fragment delay-3" style="color: var(--accent); margin-top: 2rem;"><i class="fa-solid fa-weight-hanging"></i> Especificidad</h3>
+                    <p class="fragment delay-4">Es el "peso" o prioridad de un selector.</p>
+                </div>
+                <div class="fragment delay-4">
+                    <div class="code-block" style="text-align: left;">
+                        <p style="margin-bottom:0.5rem; color:var(--text-main);"><strong>Jerarquía de peso:</strong></p>
+                        <ol style="padding-left: 1.5rem; color: var(--text-muted); font-family: 'Inter', sans-serif;">
+                            <li>Estilos en línea <code>style=""</code> <span style="color: var(--primary);">(Más fuerte)</span></li>
+                            <li>IDs <code>#header</code></li>
+                            <li>Clases <code>.btn</code></li>
+                            <li>Etiquetas <code>h1</code> <span style="color: var(--accent);">(Más débil)</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 6: Final -->
+        <div class="slide center-content">
+            <i class="fa-solid fa-rocket fragment delay-1" style="font-size: 6rem; color: var(--primary); margin-bottom: 2rem;"></i>
+            <h1 class="fragment delay-2">¡A codificar!</h1>
+            <p class="fragment delay-3">Ya conoces la teoría. Es hora de darle estilo a la web.</p>
+            <div class="code-block fragment delay-4" style="display: inline-block; text-align: left;">
+                body { <br>
+                &nbsp;&nbsp;conocimiento: 100%;<br>
+                &nbsp;&nbsp;practica: constante;<br>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interfaz de Usuario: Controles y Progreso -->
+    <div class="slide-counter" id="counter">1 / 6</div>
+    
+    <div class="controls">
+        <button class="btn-nav" id="btn-prev" onclick="changeSlide(-1)" title="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="btn-nav" id="btn-next" onclick="changeSlide(1)" title="Siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <!-- Lógica JavaScript -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const progress = document.getElementById('progress');
+        const counter = document.getElementById('counter');
+        
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        function updateUI() {
+            // Actualizar clases de las diapositivas
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Actualizar estado de los botones
+            btnPrev.disabled = currentSlide === 0;
+            btnNext.disabled = currentSlide === totalSlides - 1;
+
+            // Actualizar barra de progreso y contador
+            const progressPercentage = (currentSlide / (totalSlides - 1)) * 100;
+            progress.style.width = progressPercentage + '%';
+            counter.innerText = (currentSlide + 1) + ' / ' + totalSlides;
+        }
+
+        function changeSlide(direction) {
+            const nextSlide = currentSlide + direction;
+            if (nextSlide >= 0 && nextSlide < totalSlides) {
+                currentSlide = nextSlide;
+                updateUI();
+            }
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                e.preventDefault();
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                changeSlide(-1);
+            }
+        });
+
+        // Navegación táctil (Swipe) para móviles
+        let touchStartX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) {
+                changeSlide(1); // Deslizar a la izquierda -> Siguiente
+            }
+            if (touchEndX > touchStartX + 50) {
+                changeSlide(-1); // Deslizar a la derecha -> Anterior
+            }
+        }, { passive: true });
+
+        // Iniciar la presentación
+        updateUI();
+    </script>
+</body>
+</html>

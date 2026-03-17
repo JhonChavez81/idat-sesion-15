@@ -14,15 +14,15 @@
     <style>
         /* Variables Globales */
         :root {
-            --bg-base: #0f172a;
-            --bg-slide: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #38bdf8;
-            --secondary: #818cf8;
-            --accent: #f472b6;
-            --code-bg: #020617;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --bg-base: #FFC820;
+            --bg-slide: #FFC820;
+            --text-main: #f9f9f9;
+            --text-muted: #e5e5e5;
+            --primary: #000000;
+            --secondary: #ec1a1a;
+            --accent: #eef7ff;
+            --code-bg: #393939;
+            --border-color: rgba(0, 0, 0, 0.15);
         }
 
         /* Reseteo básico */
@@ -104,9 +104,7 @@
         h1 {
             font-size: clamp(2.5rem, 5vw, 4.5rem);
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
             margin-bottom: 1rem;
             text-align: center;
         }
@@ -115,21 +113,21 @@
             font-size: clamp(2rem, 4vw, 3rem);
             color: var(--primary);
             margin-bottom: 2rem;
-            border-bottom: 3px solid rgba(56, 189, 248, 0.2);
+            border-bottom: 3px solid var(--secondary);
             padding-bottom: 0.5rem;
             display: inline-block;
         }
 
         h3 {
             font-size: 1.5rem;
-            color: var(--text-main);
+            color: var(--primary);
             margin-bottom: 1rem;
         }
 
         p, li {
             font-size: clamp(1.1rem, 2vw, 1.3rem);
             line-height: 1.6;
-            color: var(--text-muted);
+            color: var(--primary);
             margin-bottom: 1rem;
         }
 
@@ -157,7 +155,7 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             font-family: 'Fira Code', monospace;
-            color: var(--text-main);
+            color: #FFFFFF;
             overflow-x: auto;
             position: relative;
             margin-top: 1rem;
@@ -215,17 +213,18 @@
         }
 
         .card {
-            background: rgba(2, 6, 23, 0.4);
+            background: rgba(255, 255, 255, 0.6);
             padding: 1.5rem;
             border-radius: 16px;
-            border: 1px solid rgba(56, 189, 248, 0.1);
+            border: 2px solid var(--primary);
             text-align: center;
             transition: transform 0.3s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
+            border-color: var(--secondary);
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .card i {
@@ -250,11 +249,13 @@
             padding: 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
         }
 
         th {
             color: var(--primary);
             font-weight: 600;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         /* Controles de Navegación */
@@ -268,9 +269,9 @@
         }
 
         .btn-nav {
-            background: var(--bg-slide);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
+            background: #FFFFFF;
+            border: 2px solid var(--primary);
+            color: var(--primary);
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -280,12 +281,12 @@
             justify-content: center;
             align-items: center;
             transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
         .btn-nav:hover:not(:disabled) {
             background: var(--primary);
-            color: var(--bg-base);
+            color: #FFFFFF;
             transform: scale(1.1);
         }
 
@@ -301,13 +302,13 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.1);
             z-index: 100;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, #FF6B6B, #0066CC);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -318,8 +319,9 @@
             bottom: 2rem;
             left: 2rem;
             font-family: 'Fira Code', monospace;
-            color: var(--text-muted);
+            color: var(--primary);
             font-size: 1.2rem;
+            font-weight: 600;
             z-index: 100;
         }
 
@@ -341,6 +343,7 @@
         <!-- Diapositiva 1: Inicio -->
         <div class="slide active center-content">
             <div class="fragment delay-1">
+                <img src="img/image.png" alt="Logo" style="max-width: 150px; max-height: 150px; margin-bottom: 2rem;">
                 <h1>Fundamentos de CSS</h1>
             </div>
             <p class="fragment delay-2 pulse-text" style="font-size: 1.5rem; color: var(--primary);">El arte de dar estilo a la web</p>
@@ -392,8 +395,8 @@
                     </div>
                 </div>
                 <!-- Tarjeta 3 -->
-                <div class="card fragment delay-3" style="border-color: var(--primary); background: rgba(56, 189, 248, 0.05);">
-                    <i class="fa-solid fa-link" style="color: var(--primary);"></i>
+                <div class="card fragment delay-3" style="border-color: var(--secondary); background: rgba(255, 255, 255, 0.9);">
+                    <i class="fa-solid fa-link" style="color: var(--secondary);"></i>
                     <h3>Externo <span style="font-size:0.6em;">⭐ MEJOR</span></h3>
                     <p style="font-size: 1rem;">Se vincula un archivo <code>.css</code> independiente.</p>
                     <div class="code-block" style="font-size: 0.8rem; text-align: left;">
